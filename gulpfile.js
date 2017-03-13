@@ -1,9 +1,21 @@
-var gulp = require("gulp")
-var ts = require("gulp-typescript")
-var tsProject = ts.createProject("tsconfig.json")
+let gulp = require("gulp"),
+    ts = require("gulp-typescript"),
+    mocha = require('gulp-mocha')
 
-gulp.task("default", function () {
-    return tsProject.src()
-        .pipe(tsProject())
-        .js.pipe(gulp.dest("dist"))
+let tsProject = ts.createProject("tsconfig.json")
+
+gulp.task('test', ['build'] , function() {
+    return gulp.src('./tests/**/*.ts')
+    .pipe(tsProject())
+    .pipe(gulp.dest('tests'))
+    .pipe(mocha())
 })
+
+gulp.task('build', function () {
+    let my_ts = tsProject.src().pipe(tsProject())
+
+    my_ts.pipe(gulp.dest('src'))
+    return my_ts.pipe(gulp.dest('dist'))
+})
+
+gulp.task("default", ['build'], () => {})
