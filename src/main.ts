@@ -1,6 +1,13 @@
 import * as fs from 'fs'
 import * as stream from 'stream'
 
+/**
+ * A streamed parser of Genepop files.
+ * 
+ * @export
+ * @class GenepopReader
+ * @extends {stream.Transform}
+ */
 export default class GenepopReader extends stream.Transform {
     _str_buffer: string
     _state: string
@@ -32,16 +39,15 @@ export default class GenepopReader extends stream.Transform {
             this.push(JSON.stringify({
                 what: 'ind',
                 ind: ind,
-                geno: geno}))
+                geno: alleles}) + '\n')
 
         }
-        console.log(33)
         const str = this._str_buffer + chunk.toString()
         const str_list = str.split('\n')
         for (let line of str_list) {
             switch (this._state) {
                 case 'start':
-                    this.push(JSON.stringify({what: 'title', val: line}))
+                    this.push(JSON.stringify({what: 'title', val: line}) + '\n')
                     this._state = 'loci'
                     break
                 case 'loci':
@@ -59,10 +65,10 @@ export default class GenepopReader extends stream.Transform {
                     break
                 case 'pop':
                     if (this._loci.length > 0) {
-                        this.push(JSON.stringify({what: 'loci', val: this._loci}))
+                        this.push(JSON.stringify({what: 'loci', val: this._loci}) + '\n')
                         this._loci = []                    
                     }
-                    this.push(JSON.stringify({what: 'pop'}))
+                    this.push(JSON.stringify({what: 'pop'}) + '\n')
                     this._state = 'ind'
                     do_ind(line)
                     break

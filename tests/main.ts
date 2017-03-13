@@ -6,8 +6,9 @@ import {createReadStream} from 'fs'
 describe('Reader', () => {
     it('Simple', () => {
         let stream = createReadStream('tests/data/c2line.gen')
-        //stream.pipe(process.stdout)
-        stream.pipe(new GenepopReader({})).pipe(process.stdout)
+        let reader = stream.pipe(new GenepopReader({}))
+        reader.on('data', (data : Buffer) => {
+            console.log(1, data.toString())
+        })
     })
 })
-
