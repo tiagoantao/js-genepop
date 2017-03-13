@@ -13,7 +13,28 @@ export default class GenepopReader extends stream.Transform {
         this._loci = []
     }
 
-    _transform(chunk: Buffer, encoding: string, callback: Function) {
+    _transform(chunk : Buffer, encoding : string, callback : Function) {
+        const do_ind = (line: string) => {
+            let top_toks : string[]
+            let geno : string[]
+            let alleles : string[][]
+            top_toks = line.split(',')
+            let ind : string = top_toks[0]
+            geno = top_toks[1].split(/\s+/).filter((v) => v !== '')
+            alleles = geno.map((geno) => {
+                let a1, a2: string
+                let len: number
+                len = geno.length
+                a1 = geno.slice(0, len/2)
+                a2 = geno.slice(len/2)
+                return [a1, a2]
+            })
+            this.push(JSON.stringify({
+                what: 'ind',
+                ind: ind,
+                geno: geno}))
+
+        }
         console.log(33)
         const str = this._str_buffer + chunk.toString()
         const str_list = str.split('\n')
@@ -41,8 +62,16 @@ export default class GenepopReader extends stream.Transform {
                         this.push(JSON.stringify({what: 'loci', val: this._loci}))
                         this._loci = []                    
                     }
-                    //XXX continues
+                    this.push(JSON.stringify({what: 'pop'}))
+                    this._state = 'ind'
+                    do_ind(line)
                     break
+                case 'ind':
+                    if (line.toLowerCase() === 'pop') {
+                            this._state = 'pop'
+                            break
+                    }
+                    do_ind(line)
             }
         }
         this.push(null)
