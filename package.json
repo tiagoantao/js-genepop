@@ -1,0 +1,44 @@
+{
+  "name": "@tiagoantao/js-genepop",
+  "version": "0.0.1",
+  "description": "A Perser for the Genepop Parser",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tiagoantao/js-genepop.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tiagoantao/js-genepop/issues",
+    "email": "tiagoantao@gmail.com"
+  },
+  "homepage": "https://github.com/tiagoantao/js-genepop",
+  "scripts": {
+    "lint": "gulp lint",
+    "build": "gulp build",
+    "test": "gulp test",
+    "coveralls": "gulp test && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
+  },
+  "keywords": [
+    "population genetics"
+  ],
+  "author": {
+    "name": "Tiago Antao",
+    "email": "tiagoantao@gmail.com",
+    "url": "http://tiago.org"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "coveralls": "^2.11.15",
+    "gulp": "^3.9.1",
+    "gulp-cli": "^1.2.2",
+    "gulp-documentation": "^3.1.0",
+    "gulp-eslint": "^3.0.1",
+    "gulp-istanbul": "^1.1.1",
+    "gulp-mocha": "^3.0.1",
+    "gulp-typescript": "^3.1.5",
+    "isparta": "^4.0.0",
+    "run-sequence": "^1.2.2",
+    "typescript": "^2.2.1",
+    "vinyl-source-stream": "^1.1.0"
+  }
+}
