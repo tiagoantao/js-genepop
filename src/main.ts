@@ -13,7 +13,7 @@ export default class GenepopReader extends stream.Transform {
     _state: string
     _loci: string[]
 
-    constructor (options: any) {
+    constructor (options: any   ) {
         super(options)
         this._str_buffer = ''
         this._state = 'start'
@@ -45,6 +45,8 @@ export default class GenepopReader extends stream.Transform {
         const str = this._str_buffer + chunk.toString()
         const str_list = str.split('\n')
         for (let line of str_list) {
+            line = line.trim()
+            if (line === '') continue //ignoring blank lines
             switch (this._state) {
                 case 'start':
                     this.push(JSON.stringify({what: 'title', val: line}) + '\n')
