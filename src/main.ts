@@ -11,13 +11,11 @@ import * as stream from 'stream'
 export default class GenepopReader extends stream.Transform {
     _str_buffer: string
     _state: string
-    _loci: string[]
 
     constructor (options: any) {
         super(options)
         this._str_buffer = ''
         this._state = 'start'
-        this._loci = []
     }
 
     _transform(chunk: Buffer, encoding: string, callback: Function) {
@@ -44,32 +42,39 @@ export default class GenepopReader extends stream.Transform {
         }
         const str = this._str_buffer + chunk.toString()
         const str_list = str.split('\n')
+        let loci : string[] = []
         for (let line of str_list) {
             line = line.trim()
             if (line === '') continue //ignoring blank lines
+            console.log(line, this._state)
             switch (this._state) {
                 case 'start':
                     this.push(JSON.stringify({what: 'title', val: line}) + '\n')
                     this._state = 'loci'
                     break
                 case 'loci':
-                    if (line.indexOf(',') === -1) {
+                    let loci : string[] = line.split(/,|\s+/)
+                    if (loci.length === 1) {
                         if (line.toLowerCase() === 'pop') {
+                            this.push(JSON.stringify({what: 'loci', val: loci}) + '\n')
                             this._state = 'pop'
-                            break
                         }
-                        this._loci.push(line)
+                        else {
+                            loci.push(line)
+                        }
                     }
                     else {
-                        this._loci = line.split(',')
-                        this._state = 'pop'
+                        this.push(JSON.stringify({what: 'loci', val: loci}) + '\n')
+                        this._state = 'pre_pop'
                     }
                     break
-                case 'pop':
-                    if (this._loci.length > 0) {
-                        this.push(JSON.stringify({what: 'loci', val: this._loci}) + '\n')
-                        this._loci = []                    
+                case 'pre_pop':
+                    if (line.toLowerCase() !== 'pop') {
+                         throw 'Expected pop, got: ' + line
                     }
+                    this._state = 'pop'
+                    break
+                case 'pop':
                     this.push(JSON.stringify({what: 'pop'}) + '\n')
                     this._state = 'ind'
                     do_ind(line)
