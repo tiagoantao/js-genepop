@@ -30,9 +30,14 @@ export default class GenepopReader extends stream.Transform {
                 let a1, a2: string
                 let len: number
                 len = geno.length
-                a1 = geno.slice(0, len/2)
-                a2 = geno.slice(len/2)
-                return [a1, a2]
+                if (len === 4 || len === 6) {
+                    a1 = geno.slice(0, len/2)
+                    a2 = geno.slice(len/2)
+                    return [a1, a2]
+                }
+                else {
+                    return [geno]
+                }
             })
             this.push(JSON.stringify({
                 what: 'ind',
