@@ -13,20 +13,20 @@ export default class GenepopReader extends stream.Transform {
     _state: string
     _loci: string[]
 
-    constructor (options: any   ) {
+    constructor (options: any) {
         super(options)
         this._str_buffer = ''
         this._state = 'start'
         this._loci = []
     }
 
-    _transform(chunk : Buffer, encoding : string, callback : Function) {
+    _transform(chunk: Buffer, encoding: string, callback: Function) {
         const do_ind = (line: string) => {
-            let top_toks : string[]
-            let geno : string[]
-            let alleles : string[][]
+            let top_toks: string[]
+            let geno: string[]
+            let alleles: string[][]
             top_toks = line.split(',')
-            let ind : string = top_toks[0]
+            let ind: string = top_toks[0]
             geno = top_toks[1].split(/\s+/).filter((v) => v !== '')
             alleles = geno.map((geno) => {
                 let a1, a2: string

@@ -7,7 +7,7 @@ const test_dir = 'tests/data/'
 const files = ['c2line.gen', 'c3line.gen', 'c2space.gen', 'c3space.gen',
                 'haplo3.gen', 'haplo2.gen']
 
-const test_files = (files: string[], done : Function) => {
+const test_files = (files: string[], done: Function) => {
     let completed = 0
     for (let file of files) {
         let my_json = ''
@@ -15,7 +15,7 @@ const test_files = (files: string[], done : Function) => {
         const single_file = test_dir + file
         const stream = createReadStream(single_file)
         const reader = stream.pipe(new GenepopReader({}))
-        reader.on('data', (data : Buffer) => {
+        reader.on('data', (data: Buffer) => {
             my_json += data.toString()
         })
         reader.on('end', () => {
