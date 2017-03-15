@@ -18,6 +18,8 @@ gulp.task('test', ['build', 'pretest'] , function() {
     .pipe(tsProject())
     .pipe(gulp.dest('tests'))
     .pipe(mocha())
+    .pipe(istanbul.writeReports())
+
 })
 
 gulp.task('build', function () {
