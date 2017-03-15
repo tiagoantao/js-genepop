@@ -57,21 +57,27 @@ const _test_files = (files: string[], done: Function, testf: Function) => {
 
 describe('Reader', () => {
     it('Single file - basic', (done) => {
-        _test_files([files[5]], done, (fname: string, rec: any) => {
-            console.log(fname, rec)
-
+        _test_files([files[0]], done, (fname: string, rec: any) => {
+            assert.equal(rec.loci.length, 3)
+            assert.equal(rec.pops.length, 3)
+            assert.equal(rec.pops[0].length, 4)
+            assert.equal(rec.pops[0][0].geno.length, 3)
+            assert.deepEqual(rec.pops[0][0].geno[0], ['03', '03'])
         })
     })
 
     it('Haploid testing', (done) => {
         _test_files([files[4]], done, (fname: string, rec: any) => {
+            assert.deepEqual(rec.pops[0][0].geno[0], ['003'])
             
         })
     })
 
     it('Several files - basic', (done) => {
         _test_files(files, done, (fname: string, rec: any) => {
-            
+            //Too simple
+            //console.log(fname, rec.loci)
+            assert.equal(rec.loci.length, 3)
         })
     })
 })
