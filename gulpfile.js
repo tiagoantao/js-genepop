@@ -1,10 +1,19 @@
 let gulp = require("gulp"),
+    istanbul = require('gulp-istanbul'),
     ts = require("gulp-typescript"),
     mocha = require('gulp-mocha')
 
 let tsProject = ts.createProject("tsconfig.json")
 
-gulp.task('test', ['build'] , function() {
+gulp.task('pretest', () => {
+    return gulp.src('build/' + lib_code)
+        .pipe(istanbul({
+            instrumenter: require('isparta').Instrumenter
+        }))
+        .pipe(istanbul.hookRequire())
+})
+
+gulp.task('test', ['build', 'pretest'] , function() {
     return gulp.src('./tests/**/*.ts')
     .pipe(tsProject())
     .pipe(gulp.dest('tests'))
