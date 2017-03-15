@@ -6,7 +6,7 @@ let gulp = require("gulp"),
 let tsProject = ts.createProject("tsconfig.json")
 
 gulp.task('pretest', () => {
-    return gulp.src('build/' + lib_code)
+    return gulp.src('dist/main.js')
         .pipe(istanbul({
             instrumenter: require('isparta').Instrumenter
         }))
