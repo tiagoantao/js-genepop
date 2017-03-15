@@ -47,9 +47,10 @@ export default class GenepopReader extends stream.Transform {
         }
         const str = this._str_buffer + chunk.toString()
         const str_list = str.split('\n')
-        let loci : string[] = []
+        let all_loci : string[] = []
         for (let line of str_list) {
             line = line.trim()
+            //console.log(line, this._state, all_loci)
             if (line === '') continue //ignoring blank lines
             switch (this._state) {
                 case 'start':
@@ -57,18 +58,19 @@ export default class GenepopReader extends stream.Transform {
                     this._state = 'loci'
                     break
                 case 'loci':
-                    let loci : string[] = line.split(/,|\s+/)
+                    let loci : string[] = line.split(/,|\s+/).filter((v) => v !== '')
                     if (loci.length === 1) {
                         if (line.toLowerCase() === 'pop') {
-                            this.push(JSON.stringify({what: 'loci', val: loci}) + '\n')
+                            this.push(JSON.stringify({what: 'loci', val: all_loci}) + '\n')
                             this._state = 'pop'
                         }
                         else {
-                            loci.push(line)
+                            all_loci.push(line)
                         }
                     }
                     else {
-                        this.push(JSON.stringify({what: 'loci', val: loci}) + '\n')
+                        all_loci = loci
+                        this.push(JSON.stringify({what: 'loci', val: all_loci}) + '\n')
                         this._state = 'pre_pop'
                     }
                     break
