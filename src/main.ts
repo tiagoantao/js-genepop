@@ -51,7 +51,6 @@ export default class GenepopReader extends stream.Transform {
         for (let line of str_list) {
             line = line.trim()
             if (line === '') continue //ignoring blank lines
-            console.log(line, this._state)
             switch (this._state) {
                 case 'start':
                     this.push(JSON.stringify({what: 'title', val: line}) + '\n')
